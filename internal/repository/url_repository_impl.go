@@ -43,7 +43,7 @@ func (URLRepository *URLRepositoryImpl) FindById(ctx context.Context, id int) (*
 
 func (URLRepository *URLRepositoryImpl) Delete(ctx context.Context, id int) error {
 	var URL domain.URL
-	err := URLRepository.DB.WithContext(ctx).Where("id = ?", id).Delete(&URL).First(&URL).Error
+	err := URLRepository.DB.WithContext(ctx).Where("id = ?", id).Delete(&URL).Error
 	if err != nil {
 		return err
 	}
