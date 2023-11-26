@@ -96,11 +96,20 @@ func (URLHandler *URLHandler) Delete(ctx *fiber.Ctx) error {
 		})
 	}
 
-	err = URLHandler.URLService.Delete(context.Background(), id)
+	_, err = URLHandler.URLService.GetById(context.Background(), id)
 	if err != nil {
 		return ctx.Status(fiber.StatusNotFound).JSON(api.APIResponse{
 			Code:    fiber.StatusNotFound,
-			Message: fmt.Sprintf("no record deleted with id %v", id),
+			Message: fmt.Sprintf("no record found with id %v", id),
+			Data:    struct{}{},
+		})
+	}
+
+	err = URLHandler.URLService.Delete(context.Background(), id)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(api.APIResponse{
+			Code:    fiber.StatusInternalServerError,
+			Message: "error",
 			Data:    struct{}{},
 		})
 	}
