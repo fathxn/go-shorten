@@ -19,7 +19,6 @@ func (URLRepository *URLRepositoryImpl) Insert(ctx context.Context, url *domain.
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 

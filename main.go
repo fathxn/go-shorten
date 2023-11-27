@@ -17,6 +17,8 @@ func main() {
 	urlService := service.NewURLService(urlRepository)
 	urlHandler := handler.NewURLHandler(urlService)
 
+	userRepository := repository.NewUserRepository(db)
+
 	app := fiber.New()
 	app.Use(logger.New(logger.Config{
 		Format: "${ip} ${status} - ${method} ${path}\n",
