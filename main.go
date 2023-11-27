@@ -29,5 +29,5 @@ func main() {
 	v1.Delete("/shorturl/:id", urlHandler.Delete)
 	app.Get("/:shortCode", urlHandler.RedirectURL)
 
-	_ = app.Listen(":1234")
+	_ = app.Listen(":1232")
 }
