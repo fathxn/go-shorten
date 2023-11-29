@@ -8,5 +8,6 @@ import (
 type UserRepository interface {
 	Insert(ctx context.Context, user *domain.User) error
 	FindById(ctx context.Context, id string) (*domain.User, error)
+	FindByEmail(ctx context.Context, email string) (*domain.User, error)
 	Delete(ctx context.Context, id string) error
 }

@@ -31,6 +31,15 @@ func (UserRepository *UserRepositoryImpl) FindById(ctx context.Context, id strin
 	return &User, nil
 }
 
+func (UserRepository *UserRepositoryImpl) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+	var User domain.User
+	err := UserRepository.DB.WithContext(ctx).Where("email = ?", email).First(&User).Error
+	if err != nil {
+		return nil, err
+	}
+	return &User, nil
+}
+
 func (UserRepository *UserRepositoryImpl) Delete(ctx context.Context, id string) error {
 	var User domain.User
 	err := UserRepository.DB.WithContext(ctx).Where("id = ?", id).Delete(&User).Error

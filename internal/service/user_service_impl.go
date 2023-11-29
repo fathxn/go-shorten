@@ -17,16 +17,16 @@ func NewUserService(userRepository repository.UserRepository) UserService {
 	return &UserServiceImpl{UserRepository: userRepository}
 }
 
-func (UserService *UserServiceImpl) Create(ctx context.Context, userInput *api.UserInput) error {
+func (UserService *UserServiceImpl) RegisterUser(ctx context.Context, registerInput *api.UserRegisterInput) error {
 	generateUUID := uuid.New()
-	HashedPassword, err := bcrypt.GenerateFromPassword([]byte(userInput.Password), bcrypt.DefaultCost)
+	HashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerInput.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 	user := &domain.User{
 		Id:           generateUUID.String(),
-		Name:         userInput.Name,
-		Email:        userInput.Email,
+		Name:         registerInput.Name,
+		Email:        registerInput.Email,
 		PasswordHash: string(HashedPassword),
 	}
 	err = UserService.UserRepository.Insert(ctx, user)
@@ -36,12 +36,29 @@ func (UserService *UserServiceImpl) Create(ctx context.Context, userInput *api.U
 	return nil
 }
 
+func (UserService *UserServiceImpl) LoginUser(ctx context.Context, loginInput *api.UserLoginInput) (*domain.User, error) {
+	email := loginInput.Email
+	password := loginInput.Password
+	user, err := UserService.UserRepository.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (UserService *UserServiceImpl) FindById(ctx context.Context, id string) (*domain.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
 func (UserService *UserServiceImpl) Delete(ctx context.Context, id string) error {
-	//TODO implement me
-	panic("implement me")
+	err := UserService.UserRepository.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
