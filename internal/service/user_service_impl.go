@@ -50,9 +50,12 @@ func (UserService *UserServiceImpl) LoginUser(ctx context.Context, loginInput *a
 	return user, nil
 }
 
-func (UserService *UserServiceImpl) FindById(ctx context.Context, id string) (*domain.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (UserService *UserServiceImpl) GetById(ctx context.Context, id string) (*domain.User, error) {
+	user, err := UserService.UserRepository.FindById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (UserService *UserServiceImpl) Delete(ctx context.Context, id string) error {

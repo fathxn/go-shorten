@@ -1,13 +1,11 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"go-short-url/internal/config"
 	"go-short-url/internal/handler"
-	api2 "go-short-url/internal/model/api"
+	"go-short-url/internal/middleware"
 	"go-short-url/internal/repository"
 	"go-short-url/internal/service"
 )
@@ -24,15 +22,7 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
-	userLogin := api2.UserLoginInput{
-		Email:    "syrotul.inayah@gmail.com",
-		Password: "kanaya",
-	}
-	user, err := userService.LoginUser(context.Background(), &userLogin)
-	if err != nil {
-		return
-	}
-	fmt.Println(user.Name)
+	authHandler := handler.NewAuthHandler(userService)
 
 	app := fiber.New()
 	app.Use(logger.New(logger.Config{
@@ -43,13 +33,13 @@ func main() {
 
 	// user auth routes
 	v1.Post("/auth/register", userHandler.RegisterUser)
-	v1.Post("/auth/login", userHandler.LoginUser)
+	v1.Post("/auth/login", authHandler.AuthLogin)
 
 	// short url routes
 	v1.Post("/short_url", urlHandler.CreateShortURL)
-	v1.Get("/short_url", urlHandler.GetById)
-	v1.Delete("/short_url/:id", urlHandler.Delete)
-	app.Get("/:shortCode", urlHandler.RedirectURL)
+	v1.Get("/short_url", middleware.Auth, urlHandler.GetById)
+	v1.Delete("/short_url/:id", middleware.Auth, urlHandler.Delete)
+	app.Get("/:shortCode", urlHandler.RedirectURL) // redirect
 
 	app.Use(logger.New(logger.Config{
 		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}\n",
