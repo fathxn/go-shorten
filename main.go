@@ -36,9 +36,9 @@ func main() {
 	v1.Post("/auth/login", authHandler.AuthLogin)
 
 	// short url routes
-	v1.Post("/short_url", urlHandler.CreateShortURL)
-	v1.Get("/short_url", middleware.Auth, urlHandler.GetById)
-	v1.Delete("/short_url/:id", middleware.Auth, urlHandler.Delete)
+	v1.Post("/short_url", middleware.AuthMiddleware, urlHandler.CreateShortURL)
+	v1.Get("/short_url", middleware.AuthMiddleware, urlHandler.GetById)
+	v1.Delete("/short_url/:id", middleware.AuthMiddleware, urlHandler.Delete)
 	app.Get("/:shortCode", urlHandler.RedirectURL) // redirect
 
 	app.Use(logger.New(logger.Config{

@@ -17,3 +17,20 @@ func Auth(ctx *fiber.Ctx) error {
 
 	return ctx.Next()
 }
+
+func AuthMiddleware(ctx *fiber.Ctx) error {
+	tokenString := ctx.Get("Authorization")
+	if tokenString == "" {
+		response := util.ResponseFormat(fiber.StatusUnauthorized, "unauthorized", nil)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(response)
+	}
+
+	claims, err := util.VerifyJWT(tokenString)
+	if err != nil {
+		response := util.ResponseFormat(fiber.StatusUnauthorized, "unauthorized", nil)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(response)
+	}
+
+	ctx.Locals("claims", claims)
+	return ctx.Next()
+}
