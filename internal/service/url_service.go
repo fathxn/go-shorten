@@ -9,5 +9,6 @@ type URLService interface {
 	Create(ctx context.Context, longURL string) (*domain.URL, error)
 	GetLongURL(ctx context.Context, shortCode string) (*domain.URL, error)
 	GetById(ctx context.Context, id int) (*domain.URL, error)
+	GetByUserId(ctx context.Context, userId string) ([]domain.URL, error)
 	Delete(ctx context.Context, id int) error
 }

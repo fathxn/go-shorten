@@ -51,6 +51,14 @@ func (URLService *URLServiceImpl) GetById(ctx context.Context, id int) (*domain.
 	return shortURL, nil
 }
 
+func (URLService *URLServiceImpl) GetByUserId(ctx context.Context, userId string) ([]domain.URL, error) {
+	url, err := URLService.URLRepository.FindByUserId(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+	return url, nil
+}
+
 func (URLService *URLServiceImpl) Delete(ctx context.Context, id int) error {
 	err := URLService.URLRepository.Delete(ctx, id)
 	if err != nil {

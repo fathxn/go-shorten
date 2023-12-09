@@ -37,7 +37,7 @@ func main() {
 
 	// short url routes
 	v1.Post("/short_url", middleware.AuthMiddleware, urlHandler.CreateShortURL)
-	v1.Get("/short_url", middleware.AuthMiddleware, urlHandler.GetById)
+	v1.Get("/:user_id", middleware.AuthMiddleware, urlHandler.GetByUserId) // get list of shortened url by user_id
 	v1.Delete("/short_url/:id", middleware.AuthMiddleware, urlHandler.Delete)
 	app.Get("/:shortCode", urlHandler.RedirectURL) // redirect
 

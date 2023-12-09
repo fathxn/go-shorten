@@ -63,6 +63,17 @@ func (URLHandler *URLHandler) GetById(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
+func (URLHandler *URLHandler) GetByUserId(ctx *fiber.Ctx) error {
+	userId := ctx.Params("user_id")
+	url, err := URLHandler.URLService.GetByUserId(context.Background(), userId)
+	if err != nil {
+		response := util.ResponseFormat(fiber.StatusBadRequest, api.MsgBadRequest, nil)
+		return ctx.Status(fiber.StatusBadRequest).JSON(response)
+	}
+	response := util.ResponseFormat(fiber.StatusOK, api.MsgOk, url)
+	return ctx.Status(fiber.StatusOK).JSON(response)
+}
+
 func (URLHandler *URLHandler) Delete(ctx *fiber.Ctx) error {
 	idParam := ctx.Params("id")
 	id, err := strconv.Atoi(idParam)
