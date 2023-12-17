@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"go-short-url/internal/config"
-	"go-short-url/internal/handler"
+	"go-short-url/internal/delivery/http"
 	"go-short-url/internal/middleware"
 	"go-short-url/internal/repository"
 	"go-short-url/internal/service"
@@ -16,33 +16,35 @@ func main() {
 
 	urlRepository := repository.NewURLRepository(db)
 	urlService := service.NewURLService(urlRepository)
-	urlHandler := handler.NewURLHandler(urlService)
+	urlHandler := http.NewURLHandler(urlService)
 
 	userRepository := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepository)
-	userHandler := handler.NewUserHandler(userService)
+	userService := service.NewUserService(userRepository, urlRepository)
+	userHandler := http.NewUserHandler(userService)
 
-	authHandler := handler.NewAuthHandler(userService)
+	authService := service.NewAuthService(userRepository)
+	authHandler := http.NewAuthHandler(authService)
 
 	app := fiber.New()
+	app.Use(logger.New())
 	app.Use(logger.New(logger.Config{
 		Format: "${ip} ${status} - ${method} ${path}\n",
 	}))
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
-	// user auth routes
-	v1.Post("/auth/register", userHandler.RegisterUser)
+	// auth routes
+	v1.Post("/auth/register", authHandler.RegisterUser)
 	v1.Post("/auth/login", authHandler.AuthLogin)
+
+	// user routes
+	v1.Get("/:user_id", userHandler.GetURLsByUserId) // get list of shortened url by user_id
 
 	// short url routes
 	v1.Post("/short_url", middleware.AuthMiddleware, urlHandler.CreateShortURL)
-	v1.Get("/:user_id", middleware.AuthMiddleware, urlHandler.GetByUserId) // get list of shortened url by user_id
-	v1.Delete("/short_url/:id", middleware.AuthMiddleware, urlHandler.Delete)
+	v1.Get("/short_url/", urlHandler.GetById) // short_url/id?=
+	v1.Delete("/short_url/:id", urlHandler.Delete)
 	app.Get("/:shortCode", urlHandler.RedirectURL) // redirect
 
-	app.Use(logger.New(logger.Config{
-		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}\n",
-	}))
-	_ = app.Listen(":1232")
+	_ = app.Listen("127.0.0.1:1232")
 }

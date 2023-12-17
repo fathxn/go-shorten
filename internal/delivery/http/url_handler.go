@@ -1,9 +1,9 @@
-package handler
+package http
 
 import (
 	"context"
 	"github.com/gofiber/fiber/v2"
-	"go-short-url/internal/model/api"
+	"go-short-url/internal/model/dto"
 	"go-short-url/internal/service"
 	"go-short-url/util"
 	"strconv"
@@ -18,18 +18,18 @@ func NewURLHandler(urlService service.URLService) *URLHandler {
 }
 
 func (URLHandler *URLHandler) CreateShortURL(ctx *fiber.Ctx) error {
-	var request api.URLInputRequest
+	var request dto.URLInputRequest
 	err := ctx.BodyParser(&request)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusBadRequest, api.MsgBadRequest, nil)
+		response := util.ResponseFormat(fiber.StatusBadRequest, dto.MsgBadRequest, nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(response)
 	}
 	shortURL, err := URLHandler.URLService.Create(context.Background(), request.LongURL)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusInternalServerError, api.MsgInternalServerError, nil)
+		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-	response := util.ResponseFormat(fiber.StatusCreated, api.MsgCreated, shortURL)
+	response := util.ResponseFormat(fiber.StatusCreated, dto.MsgCreated, shortURL)
 	return ctx.JSON(response)
 }
 
@@ -46,31 +46,20 @@ func (URLHandler *URLHandler) GetById(ctx *fiber.Ctx) error {
 	idParam := ctx.Query("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusBadRequest, api.MsgBadRequest, nil)
+		response := util.ResponseFormat(fiber.StatusBadRequest, dto.MsgBadRequest, nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(response)
 	}
 	result, err := URLHandler.URLService.GetById(context.Background(), id)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusNotFound, api.MsgNotFound, nil)
+		response := util.ResponseFormat(fiber.StatusNotFound, dto.MsgNotFound, nil)
 		return ctx.Status(fiber.StatusNotFound).JSON(response)
 	}
-	urlResponse := api.URLResponse{
+	urlResponse := dto.URLResponse{
 		LongURL:   result.LongURL,
 		ShortURL:  result.ShortCode,
 		CreatedAt: result.CreatedAt,
 	}
-	response := util.ResponseFormat(fiber.StatusOK, api.MsgOk, urlResponse)
-	return ctx.Status(fiber.StatusOK).JSON(response)
-}
-
-func (URLHandler *URLHandler) GetByUserId(ctx *fiber.Ctx) error {
-	userId := ctx.Params("user_id")
-	url, err := URLHandler.URLService.GetByUserId(context.Background(), userId)
-	if err != nil {
-		response := util.ResponseFormat(fiber.StatusBadRequest, api.MsgBadRequest, nil)
-		return ctx.Status(fiber.StatusBadRequest).JSON(response)
-	}
-	response := util.ResponseFormat(fiber.StatusOK, api.MsgOk, url)
+	response := util.ResponseFormat(fiber.StatusOK, dto.MsgOk, urlResponse)
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
@@ -78,19 +67,19 @@ func (URLHandler *URLHandler) Delete(ctx *fiber.Ctx) error {
 	idParam := ctx.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusInternalServerError, api.MsgInternalServerError, nil)
+		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 	_, err = URLHandler.URLService.GetById(context.Background(), id)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusNotFound, api.MsgNotFound, nil)
+		response := util.ResponseFormat(fiber.StatusNotFound, dto.MsgNotFound, nil)
 		return ctx.Status(fiber.StatusNotFound).JSON(response)
 	}
 	err = URLHandler.URLService.Delete(context.Background(), id)
 	if err != nil {
-		response := util.ResponseFormat(fiber.StatusInternalServerError, api.MsgInternalServerError, nil)
+		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-	response := util.ResponseFormat(fiber.StatusOK, api.MsgOk, nil)
+	response := util.ResponseFormat(fiber.StatusOK, dto.MsgOk, nil)
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
