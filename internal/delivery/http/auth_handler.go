@@ -2,29 +2,35 @@ package http
 
 import (
 	"context"
-	"github.com/gofiber/fiber/v2"
 	"go-short-url/internal/model/dto"
 	"go-short-url/internal/service"
 	"go-short-url/util"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-type AuthHandler struct {
+type authHandler struct {
 	AuthService service.AuthService
 }
 
-func NewAuthHandler(authService service.AuthService) *AuthHandler {
-	return &AuthHandler{AuthService: authService}
+func NewAuthHandler(authService service.AuthService) *authHandler {
+	return &authHandler{AuthService: authService}
 }
 
-func (AuthHandler *AuthHandler) RegisterUser(ctx *fiber.Ctx) error {
+func (h *authHandler) RegisterUser(ctx *fiber.Ctx) error {
 	request := &dto.UserRegisterInput{}
 	if err := ctx.BodyParser(request); err != nil {
-		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
+		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	if err := AuthHandler.AuthService.RegisterUser(context.Background(), request); err != nil {
-		response := util.ResponseFormat(fiber.StatusConflict, "email already registered", nil)
+	if err := util.ErrorValidation(request); err != nil {
+		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
+	}
+
+	if err := h.AuthService.RegisterUser(context.Background(), request); err != nil {
+		response := util.ResponseFormat(fiber.StatusConflict, "email already registered", err.Error())
 		return ctx.Status(fiber.StatusConflict).JSON(response)
 	}
 
@@ -32,14 +38,19 @@ func (AuthHandler *AuthHandler) RegisterUser(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(response)
 }
 
-func (AuthHandler *AuthHandler) AuthLogin(ctx *fiber.Ctx) error {
+func (h *authHandler) AuthLogin(ctx *fiber.Ctx) error {
 	request := &dto.UserLoginInput{}
 	if err := ctx.BodyParser(request); err != nil {
 		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	user, err := AuthHandler.AuthService.LoginUser(context.Background(), request)
+	if err := util.ErrorValidation(request); err != nil {
+		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
+	}
+
+	user, err := h.AuthService.LoginUser(context.Background(), request)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusUnauthorized, dto.MsgUnauthorized, nil)
 		return ctx.Status(fiber.StatusUnauthorized).JSON(response)

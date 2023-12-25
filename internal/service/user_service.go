@@ -21,24 +21,24 @@ func NewUserService(userRepository repository.UserRepository, urlRepository repo
 	return &userService{UserRepository: userRepository, URLRepository: urlRepository}
 }
 
-func (UserService *userService) GetById(ctx context.Context, id string) (*domain.User, error) {
-	user, err := UserService.UserRepository.FindById(ctx, id)
+func (s *userService) GetById(ctx context.Context, id string) (*domain.User, error) {
+	user, err := s.UserRepository.FindById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (UserService *userService) GetURLsByUserId(ctx context.Context, userId string) (*[]domain.URL, error) {
-	user, err := UserService.URLRepository.FindByUserId(ctx, userId)
+func (s *userService) GetURLsByUserId(ctx context.Context, userId string) (*[]domain.URL, error) {
+	user, err := s.URLRepository.FindByUserId(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
-func (UserService *userService) Delete(ctx context.Context, id string) error {
-	err := UserService.UserRepository.Delete(ctx, id)
+func (s *userService) Delete(ctx context.Context, id string) error {
+	err := s.UserRepository.Delete(ctx, id)
 	if err != nil {
 		return err
 	}

@@ -2,9 +2,9 @@ package util
 
 import "go-short-url/internal/model/dto"
 
-func ResponseFormat(code int, msg string, data any) dto.APIResponse {
+func ResponseFormat(status int, msg string, data any) dto.APIResponse {
 	response := dto.APIResponse{
-		Code:    code,
+		Status:  status,
 		Message: msg,
 		Data:    data,
 	}

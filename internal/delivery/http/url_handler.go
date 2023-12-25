@@ -2,29 +2,30 @@ package http
 
 import (
 	"context"
-	"github.com/gofiber/fiber/v2"
 	"go-short-url/internal/model/dto"
 	"go-short-url/internal/service"
 	"go-short-url/util"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-type URLHandler struct {
+type urlHandler struct {
 	URLService service.URLService
 }
 
-func NewURLHandler(urlService service.URLService) *URLHandler {
-	return &URLHandler{URLService: urlService}
+func NewURLHandler(urlService service.URLService) *urlHandler {
+	return &urlHandler{URLService: urlService}
 }
 
-func (URLHandler *URLHandler) CreateShortURL(ctx *fiber.Ctx) error {
+func (h *urlHandler) CreateShortURL(ctx *fiber.Ctx) error {
 	var request dto.URLInputRequest
 	err := ctx.BodyParser(&request)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusBadRequest, dto.MsgBadRequest, nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(response)
 	}
-	shortURL, err := URLHandler.URLService.Create(context.Background(), request.LongURL)
+	shortURL, err := h.URLService.Create(context.Background(), request.LongURL)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
@@ -33,23 +34,23 @@ func (URLHandler *URLHandler) CreateShortURL(ctx *fiber.Ctx) error {
 	return ctx.JSON(response)
 }
 
-func (URLHandler *URLHandler) RedirectURL(ctx *fiber.Ctx) error {
+func (h *urlHandler) RedirectURL(ctx *fiber.Ctx) error {
 	shortCode := ctx.Params("shortCode")
-	shortURL, err := URLHandler.URLService.GetLongURL(context.Background(), shortCode)
+	shortURL, err := h.URLService.GetLongURL(context.Background(), shortCode)
 	if err != nil {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
 	}
 	return ctx.Redirect(shortURL.LongURL, fiber.StatusTemporaryRedirect)
 }
 
-func (URLHandler *URLHandler) GetById(ctx *fiber.Ctx) error {
+func (h *urlHandler) GetById(ctx *fiber.Ctx) error {
 	idParam := ctx.Query("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusBadRequest, dto.MsgBadRequest, nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(response)
 	}
-	result, err := URLHandler.URLService.GetById(context.Background(), id)
+	result, err := h.URLService.GetById(context.Background(), id)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusNotFound, dto.MsgNotFound, nil)
 		return ctx.Status(fiber.StatusNotFound).JSON(response)
@@ -63,19 +64,19 @@ func (URLHandler *URLHandler) GetById(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response)
 }
 
-func (URLHandler *URLHandler) Delete(ctx *fiber.Ctx) error {
+func (h *urlHandler) Delete(ctx *fiber.Ctx) error {
 	idParam := ctx.Params("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-	_, err = URLHandler.URLService.GetById(context.Background(), id)
+	_, err = h.URLService.GetById(context.Background(), id)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusNotFound, dto.MsgNotFound, nil)
 		return ctx.Status(fiber.StatusNotFound).JSON(response)
 	}
-	err = URLHandler.URLService.Delete(context.Background(), id)
+	err = h.URLService.Delete(context.Background(), id)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)

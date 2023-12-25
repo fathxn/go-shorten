@@ -1,10 +1,12 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type (
 	URLInputRequest struct {
-		LongURL string `json:"long_url"`
+		LongURL string `json:"long_url" validate:"required" binding:"required"`
 	}
 
 	GetByUserIdRequest struct {
