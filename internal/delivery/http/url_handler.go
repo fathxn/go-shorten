@@ -25,7 +25,12 @@ func (h *urlHandler) CreateShortURL(ctx *fiber.Ctx) error {
 		response := util.ResponseFormat(fiber.StatusBadRequest, dto.MsgBadRequest, nil)
 		return ctx.Status(fiber.StatusBadRequest).JSON(response)
 	}
-	shortURL, err := h.URLService.Create(context.Background(), request.LongURL)
+	if err := util.ErrorValidation(request); err != nil {
+		response := util.ResponseFormat(fiber.StatusBadRequest, dto.MsgBadRequest, nil)
+		return ctx.Status(fiber.StatusBadRequest).JSON(response)
+	}
+	userId := ctx.Locals("userId").(string)
+	shortURL, err := h.URLService.Create(context.Background(), request.LongURL, userId)
 	if err != nil {
 		response := util.ResponseFormat(fiber.StatusInternalServerError, dto.MsgInternalServerError, nil)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)

@@ -12,7 +12,7 @@ import (
 )
 
 type URLService interface {
-	Create(ctx context.Context, longURL string) (*domain.URL, error)
+	Create(ctx context.Context, longURL string, userId string) (*domain.URL, error)
 	GetLongURL(ctx context.Context, shortCode string) (*domain.URL, error)
 	GetById(ctx context.Context, id int) (*domain.URL, error)
 	// GetByUserId(ctx context.Context, userId string) (*[]domain.URL, error)
@@ -27,12 +27,13 @@ func NewURLService(urlRepository repository.URLRepository) URLService {
 	return &urlService{URLRepository: urlRepository}
 }
 
-func (s *urlService) Create(ctx context.Context, longURL string) (*domain.URL, error) {
+func (s *urlService) Create(ctx context.Context, longURL string, userId string) (*domain.URL, error) {
 	shortCode, err := util.GenerateUniqueCode(s.isShortCodeUnique)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate short code: %v", err)
 	}
 	shortUrl := &domain.URL{
+		UserId:    userId,
 		LongURL:   longURL,
 		ShortCode: shortCode,
 	}

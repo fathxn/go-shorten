@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"go-short-url/internal/config"
 	"go-short-url/internal/delivery/http"
 	"go-short-url/internal/middleware"
 	"go-short-url/internal/repository"
 	"go-short-url/internal/service"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {

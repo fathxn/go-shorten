@@ -1,8 +1,10 @@
 package middleware
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"go-short-url/util"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func AuthMiddleware(ctx *fiber.Ctx) error {
@@ -18,6 +20,11 @@ func AuthMiddleware(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
-	ctx.Locals("claims", claims)
+	claimsMap := claims.Claims.(jwt.MapClaims)
+
+	userId := claimsMap["id"].(string)
+	ctx.Locals("userId", userId)
+
+	// ctx.Locals("claims", claims)
 	return ctx.Next()
 }
