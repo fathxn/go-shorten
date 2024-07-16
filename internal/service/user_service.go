@@ -8,7 +8,7 @@ import (
 
 type userService struct {
 	UserRepository repository.UserRepository
-	URLRepository  repository.URLRepository
+	URLRepository  domain.URLRepository
 }
 
 type UserService interface {
@@ -17,7 +17,7 @@ type UserService interface {
 	Delete(ctx context.Context, id string) error
 }
 
-func NewUserService(userRepository repository.UserRepository, urlRepository repository.URLRepository) UserService {
+func NewUserService(userRepository repository.UserRepository, urlRepository domain.URLRepository) UserService {
 	return &userService{UserRepository: userRepository, URLRepository: urlRepository}
 }
 

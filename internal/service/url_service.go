@@ -5,25 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"go-short-url/internal/model/domain"
-	"go-short-url/internal/repository"
 	"go-short-url/util"
 
 	"gorm.io/gorm"
 )
 
-type URLService interface {
-	Create(ctx context.Context, longURL string, userId string) (*domain.URL, error)
-	GetLongURL(ctx context.Context, shortCode string) (*domain.URL, error)
-	GetById(ctx context.Context, id int) (*domain.URL, error)
-	// GetByUserId(ctx context.Context, userId string) (*[]domain.URL, error)
-	Delete(ctx context.Context, id int) error
-}
-
 type urlService struct {
-	URLRepository repository.URLRepository
+	URLRepository domain.URLRepository
 }
 
-func NewURLService(urlRepository repository.URLRepository) URLService {
+func NewURLService(urlRepository domain.URLRepository) domain.URLService {
 	return &urlService{URLRepository: urlRepository}
 }
 

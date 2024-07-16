@@ -2,8 +2,8 @@ package http
 
 import (
 	"context"
+	"go-short-url/internal/model/domain"
 	"go-short-url/internal/model/dto"
-	"go-short-url/internal/service"
 	"go-short-url/util"
 	"strconv"
 
@@ -11,10 +11,10 @@ import (
 )
 
 type urlHandler struct {
-	URLService service.URLService
+	URLService domain.URLService
 }
 
-func NewURLHandler(urlService service.URLService) *urlHandler {
+func NewURLHandler(urlService domain.URLService) *urlHandler {
 	return &urlHandler{URLService: urlService}
 }
 

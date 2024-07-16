@@ -7,19 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type URLRepository interface {
-	Insert(ctx context.Context, url *domain.URL) error
-	FindByShortCode(ctx context.Context, shortCode string) (*domain.URL, error)
-	FindById(ctx context.Context, id int) (*domain.URL, error)
-	FindByUserId(ctx context.Context, userId string) ([]domain.URL, error)
-	Delete(ctx context.Context, id int) error
-}
-
 type urlRepository struct {
 	db *gorm.DB
 }
 
-func NewURLRepository(db *gorm.DB) URLRepository {
+func NewURLRepository(db *gorm.DB) domain.URLRepository {
 	return &urlRepository{db: db}
 }
 
