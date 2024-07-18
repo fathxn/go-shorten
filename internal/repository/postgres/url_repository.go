@@ -26,13 +26,34 @@ func (r *urlRepository) Insert(ctx context.Context, url *domain.URL) error {
 }
 
 // FindByShortCode implements domain.URLRepository.
+// Will rename from FindByShortCode to FindLongURLByShortCode
 func (r *urlRepository) FindByShortCode(ctx context.Context, shortCode string) (*domain.URL, error) {
-	panic("unimplemented")
+	var url domain.URL
+	query := `
+		SELECT long_url
+		WHERE short_code = $1
+		LIMIT 1;
+	`
+	err := r.db.GetContext(ctx, &url, query, shortCode)
+	if err != nil {
+		return nil, err
+	}
+	return &url, nil
 }
 
 // FindById implements domain.URLRepository.
 func (r *urlRepository) FindById(ctx context.Context, id int) (*domain.URL, error) {
-	panic("unimplemented")
+	var url domain.URL
+	query := `
+		SELECT user_id, long_url, short_code
+		WHERE id = $1
+		LIMIT 1;
+	`
+	err := r.db.GetContext(ctx, &url, query, id)
+	if err != nil {
+		return nil, err
+	}
+	return &url, nil
 }
 
 // FindByUserId implements domain.URLRepository.
