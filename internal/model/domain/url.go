@@ -10,6 +10,7 @@ type URL struct {
 	UserId    string    `db:"user_id" gorm:"type:varchar(255)"`
 	LongURL   string    `db:"long_url" gorm:"type:varchar(255)"`
 	ShortCode string    `db:"short_code" gorm:"type:varchar(255)"`
+	Visits    int       `db:"visits"`
 	CreatedAt time.Time `db:"created_at"`
 }
 
