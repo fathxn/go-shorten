@@ -17,6 +17,9 @@ type Subscription struct {
 
 type SubscriptionRepository interface {
 	Create(ctx context.Context, subscription *Subscription) error
+	GetById(ctx context.Context, id int) (*Subscription, error)
+	Update(ctx context.Context, subscription *Subscription) error
+	Delete(ctx context.Context, id int) error
 }
 
 type SubscriptionService interface{}
