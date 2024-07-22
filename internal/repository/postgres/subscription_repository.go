@@ -33,7 +33,18 @@ func (r *subscriptionRepository) Create(ctx context.Context, subscription *domai
 
 // GetById implements domain.SubscriptionRepository.
 func (r *subscriptionRepository) GetById(ctx context.Context, id int) (*domain.Subscription, error) {
-	panic("unimplemented")
+	var subscription domain.Subscription
+	query := `
+		SELECT name, price, duration, max_urls
+		WHERE id = $1
+		LIMIT 1;
+	`
+	err := r.db.GetContext(ctx, &subscription, query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &subscription, nil
 }
 
 // Update implements domain.SubscriptionRepository.
