@@ -54,5 +54,10 @@ func (r *subscriptionRepository) Update(ctx context.Context, subscription *domai
 
 // Delete implements domain.SubscriptionRepository.
 func (r *subscriptionRepository) Delete(ctx context.Context, id int) error {
-	panic("unimplemented")
+	query := `DELETE FROM subscriptions WHERE id = $1;`
+	_, err := r.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
