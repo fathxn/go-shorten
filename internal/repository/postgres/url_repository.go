@@ -63,7 +63,7 @@ func (r *urlRepository) FindByUserId(ctx context.Context, userId string) ([]doma
 
 // Delete implements domain.URLRepository.
 func (r *urlRepository) Delete(ctx context.Context, id int) error {
-	execQuery := "DELETE FROM urls WHERE id = $1;"
+	execQuery := `DELETE FROM urls WHERE id = $1;`
 	_, err := r.db.ExecContext(ctx, execQuery, id)
 	if err != nil {
 		return err

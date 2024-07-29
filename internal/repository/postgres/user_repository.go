@@ -15,22 +15,49 @@ func NewUserRepository(db *sqlx.DB) domain.UserRepository {
 	return &userRepository{db: db}
 }
 
-// Delete implements domain.UserRepository.
-func (u *userRepository) Delete(ctx context.Context, id string) error {
-	panic("unimplemented")
-}
-
-// FindByEmail implements domain.UserRepository.
-func (u *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+// Insert implements domain.UserRepository.
+func (r *userRepository) Insert(ctx context.Context, user *domain.User) error {
 	panic("unimplemented")
 }
 
 // FindById implements domain.UserRepository.
-func (u *userRepository) FindById(ctx context.Context, id string) (*domain.User, error) {
-	panic("unimplemented")
+func (r *userRepository) FindById(ctx context.Context, id string) (*domain.User, error) {
+	var user domain.User
+	query := `
+		SELECT name, email
+		WHERE id = $1
+		LIMIT 1;
+	`
+
+	if err := r.db.GetContext(ctx, &user, query, id); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
-// Insert implements domain.UserRepository.
-func (u *userRepository) Insert(ctx context.Context, user *domain.User) error {
-	panic("unimplemented")
+// FindByEmail implements domain.UserRepository.
+func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+	var user domain.User
+	query := `
+		SELECT name, email
+		WHERE email = $1
+		LIMIT 1;
+	`
+
+	if err := r.db.GetContext(ctx, &user, query, email); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// Delete implements domain.UserRepository.
+func (r *userRepository) Delete(ctx context.Context, id string) error {
+	query := `DELETE FROM users WHERE id = $1`
+	_, err := r.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
