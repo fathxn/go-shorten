@@ -4,7 +4,8 @@ import (
 	"go-shorten/internal/config"
 	"go-shorten/internal/delivery/http"
 	"go-shorten/internal/middleware"
-	"go-shorten/internal/repository"
+	_ "go-shorten/internal/repository"
+	"go-shorten/internal/repository/postgres"
 	"go-shorten/internal/service"
 	"log"
 
@@ -25,11 +26,11 @@ func main() {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
-	urlRepository := repository.NewURLRepository(db)
+	urlRepository := postgres.NewURLRepository(db)
 	urlService := service.NewURLService(urlRepository)
 	urlHandler := http.NewURLHandler(urlService)
 
-	userRepository := repository.NewUserRepository(db)
+	userRepository := postgres.NewUserRepository(db)
 	userService := service.NewUserService(userRepository, urlRepository)
 	userHandler := http.NewUserHandler(userService)
 

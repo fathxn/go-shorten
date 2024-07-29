@@ -2,18 +2,18 @@ package http
 
 import (
 	"context"
+	"go-shorten/internal/model/domain"
 	"go-shorten/internal/model/dto"
-	"go-shorten/internal/service"
 	"go-shorten/util"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type userHandler struct {
-	UserService service.UserService
+	UserService domain.UserService
 }
 
-func NewUserHandler(userService service.UserService) *userHandler {
+func NewUserHandler(userService domain.UserService) *userHandler {
 	return &userHandler{UserService: userService}
 }
 
