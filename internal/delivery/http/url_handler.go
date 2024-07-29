@@ -2,9 +2,9 @@ package http
 
 import (
 	"context"
-	"go-short-url/internal/model/domain"
-	"go-short-url/internal/model/dto"
-	"go-short-url/util"
+	"go-shorten/internal/model/domain"
+	"go-shorten/internal/model/dto"
+	"go-shorten/util"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-short-url/util"
+	"go-shorten/util"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"

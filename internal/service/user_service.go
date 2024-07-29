@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"go-short-url/internal/model/domain"
-	"go-short-url/internal/repository"
+	"go-shorten/internal/model/domain"
+	"go-shorten/internal/repository"
 )
 
 type userService struct {

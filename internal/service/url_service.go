@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-short-url/internal/model/domain"
-	"go-short-url/util"
+	"go-shorten/internal/model/domain"
+	"go-shorten/util"
 
 	"gorm.io/gorm"
 )

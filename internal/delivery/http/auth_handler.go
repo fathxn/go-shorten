@@ -2,9 +2,9 @@ package http
 
 import (
 	"context"
-	"go-short-url/internal/model/dto"
-	"go-short-url/internal/service"
-	"go-short-url/util"
+	"go-shorten/internal/model/dto"
+	"go-shorten/internal/service"
+	"go-shorten/util"
 
 	"github.com/gofiber/fiber/v2"
 )

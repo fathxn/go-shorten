@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"go-short-url/internal/model/domain"
-	"go-short-url/internal/model/dto"
-	"go-short-url/internal/repository"
+	"go-shorten/internal/model/domain"
+	"go-shorten/internal/model/dto"
+	"go-shorten/internal/repository"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"

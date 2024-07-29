@@ -1,6 +1,6 @@
 package util
 
-import "go-short-url/internal/model/dto"
+import "go-shorten/internal/model/dto"
 
 func ResponseFormat(status int, msg string, data any) dto.APIResponse {
 	response := dto.APIResponse{

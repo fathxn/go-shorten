@@ -1,19 +1,29 @@
 package main
 
 import (
-	"go-short-url/internal/config"
-	"go-short-url/internal/delivery/http"
-	"go-short-url/internal/middleware"
-	"go-short-url/internal/repository"
-	"go-short-url/internal/service"
+	"go-shorten/internal/config"
+	"go-shorten/internal/delivery/http"
+	"go-shorten/internal/middleware"
+	"go-shorten/internal/repository"
+	"go-shorten/internal/service"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
-	config.InitConfig()
-	db := config.InitDB()
+	// config.InitConfig()
+	// db := config.InitDB()
+	cfg, err := config.LoadConfig("./")
+	if err != nil {
+		log.Fatalf("failed to load config: %v", err)
+	}
+
+	db, err := config.NewDB(cfg)
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
 
 	urlRepository := repository.NewURLRepository(db)
 	urlService := service.NewURLService(urlRepository)

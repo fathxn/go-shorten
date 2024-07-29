@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"go-short-url/internal/model/domain"
+	"go-shorten/internal/model/domain"
 
 	"gorm.io/gorm"
 )

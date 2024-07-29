@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"context"
-	"go-short-url/internal/model/domain"
+	"go-shorten/internal/model/domain"
 
 	"github.com/jmoiron/sqlx"
 )

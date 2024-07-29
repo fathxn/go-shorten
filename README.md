@@ -1,4 +1,4 @@
-# go-short-url
+# go-shorten
 Go Short URL is a simple backend RESTful API project built with some basic features like authentication, authorization, middleware, password encryption using Go Language Programming.
 
  *Features*
