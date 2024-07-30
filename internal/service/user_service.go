@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"go-shorten/internal/model/domain"
-	"go-shorten/internal/repository"
 )
 
 type userService struct {
@@ -11,7 +10,7 @@ type userService struct {
 	URLRepository  domain.URLRepository
 }
 
-func NewUserService(userRepository repository.UserRepository, urlRepository domain.URLRepository) domain.UserService {
+func NewUserService(userRepository domain.UserRepository, urlRepository domain.URLRepository) domain.UserService {
 	return &userService{UserRepository: userRepository, URLRepository: urlRepository}
 }
 

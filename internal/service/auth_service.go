@@ -4,7 +4,6 @@ import (
 	"context"
 	"go-shorten/internal/model/domain"
 	"go-shorten/internal/model/dto"
-	"go-shorten/internal/repository"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -16,10 +15,10 @@ type AuthService interface {
 }
 
 type authService struct {
-	UserRepository repository.UserRepository
+	UserRepository domain.UserRepository
 }
 
-func NewAuthService(UserRepository repository.UserRepository) AuthService {
+func NewAuthService(UserRepository domain.UserRepository) AuthService {
 	return &authService{UserRepository: UserRepository}
 }
 

@@ -4,7 +4,6 @@ import (
 	"go-shorten/internal/config"
 	"go-shorten/internal/delivery/http"
 	"go-shorten/internal/middleware"
-	_ "go-shorten/internal/repository"
 	"go-shorten/internal/repository/postgres"
 	"go-shorten/internal/service"
 	"log"
