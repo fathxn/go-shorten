@@ -17,7 +17,16 @@ func NewUserRepository(db *sqlx.DB) domain.UserRepository {
 
 // Insert implements domain.UserRepository.
 func (r *userRepository) Insert(ctx context.Context, user *domain.User) error {
-	panic("unimplemented")
+	query := `
+		INSERT INTO users (name, email, password_hash)
+		VALUES ($1, $2, $3)
+		RETURNING id, created_at
+	`
+	return r.db.QueryRowxContext(ctx, query,
+		user.Name,
+		user.Email,
+		user.PasswordHash,
+	).Scan(&user.Id, &user.CreatedAt)
 }
 
 // FindById implements domain.UserRepository.
