@@ -18,15 +18,18 @@ func NewUserRepository(db *sqlx.DB) domain.UserRepository {
 // Insert implements domain.UserRepository.
 func (r *userRepository) Insert(ctx context.Context, user *domain.User) error {
 	query := `
-		INSERT INTO users (name, email, password_hash)
-		VALUES ($1, $2, $3)
-		RETURNING id, created_at
+		INSERT INTO users (name, email, password_hash, is_verified, verification_token, verification_token_expires_at)
+		VALUES ($1, $2, $3, $4, $5, $6)
+		RETURNING id, created_at, updated_at
 	`
 	return r.db.QueryRowxContext(ctx, query,
 		user.Name,
 		user.Email,
 		user.PasswordHash,
-	).Scan(&user.Id, &user.CreatedAt)
+		user.IsVerified,
+		user.VerificationToken,
+		user.VerificationTokenExpiresAt,
+	).Scan(&user.Id, &user.CreatedAt, &user.UpdatedAt)
 }
 
 // FindById implements domain.UserRepository.
