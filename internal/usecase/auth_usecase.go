@@ -1,4 +1,4 @@
-package service
+package usecase
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthService interface {
+type AuthUsecase interface {
 	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error
 	LoginUser(ctx context.Context, loginInput *dto.UserLoginInput) (*domain.User, error)
 }
@@ -18,7 +18,7 @@ type authService struct {
 	UserRepository domain.UserRepository
 }
 
-func NewAuthService(UserRepository domain.UserRepository) AuthService {
+func NewAuthService(UserRepository domain.UserRepository) AuthUsecase {
 	return &authService{UserRepository: UserRepository}
 }
 

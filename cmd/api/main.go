@@ -5,7 +5,7 @@ import (
 	"go-shorten/internal/delivery/http"
 	"go-shorten/internal/middleware"
 	"go-shorten/internal/repository/postgres"
-	"go-shorten/internal/service"
+	"go-shorten/internal/usecase"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,14 +26,14 @@ func main() {
 	}
 
 	urlRepository := postgres.NewURLRepository(db)
-	urlService := service.NewURLService(urlRepository)
+	urlService := usecase.NewURLService(urlRepository)
 	urlHandler := http.NewURLHandler(urlService)
 
 	userRepository := postgres.NewUserRepository(db)
-	userService := service.NewUserService(userRepository, urlRepository)
+	userService := usecase.NewUserService(userRepository, urlRepository)
 	userHandler := http.NewUserHandler(userService)
 
-	authService := service.NewAuthService(userRepository)
+	authService := usecase.NewAuthService(userRepository)
 	authHandler := http.NewAuthHandler(authService)
 
 	app := fiber.New()

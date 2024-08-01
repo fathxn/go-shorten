@@ -6,11 +6,15 @@ import (
 )
 
 type User struct {
-	Id           string    `gorm:"primaryKey" db:"id"`
-	Name         string    `gorm:"type:varchar(255);not null" db:"name"`
-	Email        string    `gorm:"type:varchar(255);unique;not null" db:"email"`
-	PasswordHash string    `gorm:"varchar(255);not null" db:"password_hash"`
-	CreatedAt    time.Time `db:"created_at"`
+	Id                         string    `db:"id"`
+	Name                       string    `db:"name"`
+	Email                      string    `db:"email"`
+	PasswordHash               string    `db:"password_hash"`
+	IsVerified                 bool      `db:"is_verified"`
+	VerificationToken          string    `db:"verification_token"`
+	VerificationTokenExpiresAt time.Time `db:"verification_token_expires_at"`
+	CreatedAt                  time.Time `db:"created_at"`
+	UpdatedAt                  time.Time `db:"updated_at"`
 }
 
 type UserRepository interface {
