@@ -64,6 +64,28 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain
 	return &user, nil
 }
 
+func (r *userRepository) GetByVerificationToken(ctx context.Context, token string) (*domain.User, error) {
+	var user domain.User
+	query := `SELECT name, email, is_verified WHERE verification_token = $1 LIMIT 1;`
+	if err := r.db.GetContext(ctx, &user, query, token); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId int, isVerified bool) error {
+	query := `
+		UPDATE users
+		SET is_verified = $1, updated_at = NOW()
+		WHERE id = $2
+	`
+	_, err := r.db.ExecContext(ctx, query, isVerified, userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Delete implements domain.UserRepository.
 func (r *userRepository) Delete(ctx context.Context, id string) error {
 	query := `DELETE FROM users WHERE id = $1`

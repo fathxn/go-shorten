@@ -21,6 +21,8 @@ type UserRepository interface {
 	Insert(ctx context.Context, user *User) error
 	FindById(ctx context.Context, id string) (*User, error)
 	FindByEmail(ctx context.Context, email string) (*User, error)
+	GetByVerificationToken(ctx context.Context, token string) (*User, error)
+	UpdateVerificationStatus(ctx context.Context, userId int, isVerified bool) error
 	Delete(ctx context.Context, id string) error
 }
 
