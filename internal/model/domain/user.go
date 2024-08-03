@@ -23,12 +23,12 @@ type UserRepository interface {
 	GetById(ctx context.Context, id string) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByVerificationToken(ctx context.Context, token string) (*User, error)
-	UpdateVerificationStatus(ctx context.Context, userId int, isVerified bool) error
+	UpdateVerificationStatus(ctx context.Context, userId string, isVerified bool) error
 	Delete(ctx context.Context, id string) error
 }
 
 type UserService interface {
-	RegisterUser(ctx context.Context, registerUser *dto.UserRegisterInput) error
+	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error
 	VerifyEmail(ctx context.Context, token string) error
 	GetById(ctx context.Context, id string) (*User, error)
 	GetURLsByUserId(ctx context.Context, userId string) (*[]URL, error)

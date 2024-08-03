@@ -34,7 +34,7 @@ func (s *authService) RegisterUser(ctx context.Context, registerInput *dto.UserR
 		Email:        registerInput.Email,
 		PasswordHash: string(HashedPassword),
 	}
-	err = s.UserRepository.Insert(ctx, user)
+	err = s.UserRepository.Create(ctx, user)
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func (s *authService) RegisterUser(ctx context.Context, registerInput *dto.UserR
 func (s *authService) LoginUser(ctx context.Context, loginInput *dto.UserLoginInput) (*domain.User, error) {
 	email := loginInput.Email
 	password := loginInput.Password
-	user, err := s.UserRepository.FindByEmail(ctx, email)
+	user, err := s.UserRepository.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}

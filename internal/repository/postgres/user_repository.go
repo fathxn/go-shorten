@@ -73,7 +73,7 @@ func (r *userRepository) GetByVerificationToken(ctx context.Context, token strin
 
 	return &user, nil
 }
-func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId int, isVerified bool) error {
+func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId string, isVerified bool) error {
 	query := `
 		UPDATE users
 		SET is_verified = $1, updated_at = NOW()
