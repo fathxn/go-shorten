@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"go-shorten/internal/model/dto"
 	"time"
 )
 
@@ -18,15 +19,17 @@ type User struct {
 }
 
 type UserRepository interface {
-	Insert(ctx context.Context, user *User) error
-	FindById(ctx context.Context, id string) (*User, error)
-	FindByEmail(ctx context.Context, email string) (*User, error)
+	Create(ctx context.Context, user *User) error
+	GetById(ctx context.Context, id string) (*User, error)
+	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByVerificationToken(ctx context.Context, token string) (*User, error)
 	UpdateVerificationStatus(ctx context.Context, userId int, isVerified bool) error
 	Delete(ctx context.Context, id string) error
 }
 
 type UserService interface {
+	RegisterUser(ctx context.Context, registerUser *dto.UserRegisterInput) error
+	VerifyEmail(ctx context.Context, token string) error
 	GetById(ctx context.Context, id string) (*User, error)
 	GetURLsByUserId(ctx context.Context, userId string) (*[]URL, error)
 	Delete(ctx context.Context, id string) error

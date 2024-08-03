@@ -16,7 +16,7 @@ func NewUserRepository(db *sqlx.DB) domain.UserRepository {
 }
 
 // Insert implements domain.UserRepository.
-func (r *userRepository) Insert(ctx context.Context, user *domain.User) error {
+func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 	query := `
 		INSERT INTO users (name, email, password_hash, is_verified, verification_token, verification_token_expires_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
@@ -33,7 +33,7 @@ func (r *userRepository) Insert(ctx context.Context, user *domain.User) error {
 }
 
 // FindById implements domain.UserRepository.
-func (r *userRepository) FindById(ctx context.Context, id string) (*domain.User, error) {
+func (r *userRepository) GetById(ctx context.Context, id string) (*domain.User, error) {
 	var user domain.User
 	query := `
 		SELECT name, email
@@ -49,7 +49,7 @@ func (r *userRepository) FindById(ctx context.Context, id string) (*domain.User,
 }
 
 // FindByEmail implements domain.UserRepository.
-func (r *userRepository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
 	var user domain.User
 	query := `
 		SELECT name, email

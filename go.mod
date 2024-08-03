@@ -15,6 +15,8 @@ require (
 
 require github.com/midtrans/midtrans-go v1.3.8
 
+require github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e // indirect
+
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
