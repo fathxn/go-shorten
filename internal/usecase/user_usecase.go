@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"go-shorten/internal/model/domain"
 	"go-shorten/internal/model/dto"
 	"go-shorten/pkg/email"
@@ -17,7 +18,7 @@ type userUsecase struct {
 	emailSender    email.Sender
 }
 
-func NewUserService(userRepository domain.UserRepository, urlRepository domain.URLRepository) domain.UserService {
+func NewUserService(userRepository domain.UserRepository, urlRepository domain.URLRepository) domain.UserUsecase {
 	return &userUsecase{UserRepository: userRepository, URLRepository: urlRepository}
 }
 
@@ -59,7 +60,7 @@ func (u *userUsecase) VerifyEmail(ctx context.Context, token string) error {
 	}
 
 	if user == nil {
-		return err
+		return errors.New("verification token has expired")
 	}
 
 	return u.UserRepository.UpdateVerificationStatus(ctx, user.Id, true)

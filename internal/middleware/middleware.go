@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"go-shorten/internal/model/domain"
 	"go-shorten/util"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,4 +28,20 @@ func AuthMiddleware(ctx *fiber.Ctx) error {
 
 	// ctx.Locals("claims", claims)
 	return ctx.Next()
+}
+
+func RequireVerifiedEmail(userUsecase domain.UserUsecase) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		userId := c.Locals("userId").(string)
+		user, err := userUsecase.GetById(c.Context(), userId)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to get user"})
+		}
+
+		if !user.IsVerified {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "email not verified"})
+		}
+
+		return c.Next()
+	}
 }

@@ -27,7 +27,7 @@ type UserRepository interface {
 	Delete(ctx context.Context, id string) error
 }
 
-type UserService interface {
+type UserUsecase interface {
 	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error
 	VerifyEmail(ctx context.Context, token string) error
 	GetById(ctx context.Context, id string) (*User, error)
