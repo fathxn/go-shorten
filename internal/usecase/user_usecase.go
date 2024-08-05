@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go-shorten/internal/model/domain"
 	"go-shorten/internal/model/dto"
 	"go-shorten/pkg/email"
@@ -30,7 +31,7 @@ func (u *userUsecase) RegisterUser(ctx context.Context, registerInput *dto.UserR
 	}
 
 	verificationToken := generateUUID.String()
-	expiresAt := time.Now()
+	expiresAt := time.Now().Add(1 * time.Hour)
 
 	user := &domain.User{
 		Id:                         generateUUID.String(),
@@ -41,15 +42,16 @@ func (u *userUsecase) RegisterUser(ctx context.Context, registerInput *dto.UserR
 		VerificationTokenExpiresAt: expiresAt,
 	}
 
-	verificationLink := "localhost" + "/verify?token=" + verificationToken
-	if err := u.emailSender.SendVerificationEmail(registerInput.Email, verificationLink); err != nil {
-		return nil
-	}
-
 	err = u.UserRepository.Create(ctx, user)
 	if err != nil {
 		return err
 	}
+
+	verificationLink := "localhost" + "/verify?token=" + verificationToken
+	if err := u.emailService.SendVerificationEmail(registerInput.Email, "Email Verification", verificationLink); err != nil {
+		return fmt.Errorf("failed to send email verification: %w", err)
+	}
+
 	return nil
 }
 
