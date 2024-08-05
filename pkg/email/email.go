@@ -1,36 +1,38 @@
 package email
 
-import "net/smtp"
+import (
+	"fmt"
+	"go-shorten/config"
+	"net/smtp"
+)
 
-type Sender interface {
-	SendVerificationEmail(to, verificationLink string) error
+type EmailService interface {
+	SendVerificationEmail(to, subject, body string) error
 }
 
-type smtpSender struct {
-	from     string
-	password string
-	smtpHost string
-	smtpPort string
+type smtpEmailService struct {
+	config *config.SMTPConfig
 }
 
-func NewSMTPSender(from, password, smtpHost, smtpPort string) Sender {
-	return &smtpSender{
-		from:     from,
-		password: password,
-		smtpHost: smtpHost,
-		smtpPort: smtpPort,
+func NewSMTPSender(config *config.SMTPConfig) EmailService {
+	return &smtpEmailService{config: config}
+}
+
+func (s *smtpEmailService) SendVerificationEmail(to, subject, body string) error {
+	auth := smtp.PlainAuth("", s.config.Email, s.config.Password, s.config.Host)
+	msg := []byte(fmt.Sprintf("Subject: %s\r\n\r\n%s", subject, body))
+
+	err := smtp.SendMail(
+		fmt.Sprintf("%s:%d", s.config.Host, s.config.Port),
+		auth,
+		s.config.FromAddress,
+		[]string{to},
+		msg,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
 	}
-}
 
-func (s *smtpSender) SendVerificationEmail(to, verificationLink string) error {
-	subject := "Ringkas.Link - Email Verification"
-	body := "Please click the following link to verify your email: " + verificationLink
-
-	message := []byte("To: " + to + "\r\n" +
-		"Subject: " + subject + "\r\n" +
-		"\r\n" +
-		body)
-
-	auth := smtp.PlainAuth("", s.from, s.password, s.smtpHost)
-	return smtp.SendMail(s.smtpHost+":"+s.smtpPort, auth, s.from, []string{to}, message)
+	return nil
 }

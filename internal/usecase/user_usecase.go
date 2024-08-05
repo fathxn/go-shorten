@@ -15,10 +15,10 @@ import (
 type userUsecase struct {
 	UserRepository domain.UserRepository
 	URLRepository  domain.URLRepository
-	emailSender    email.Sender
+	emailService   email.EmailService
 }
 
-func NewUserService(userRepository domain.UserRepository, urlRepository domain.URLRepository) domain.UserUsecase {
+func NewUserUsecase(userRepository domain.UserRepository, urlRepository domain.URLRepository) domain.UserUsecase {
 	return &userUsecase{UserRepository: userRepository, URLRepository: urlRepository}
 }
 

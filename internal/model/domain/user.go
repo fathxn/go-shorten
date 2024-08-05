@@ -7,15 +7,16 @@ import (
 )
 
 type User struct {
-	Id                         string    `db:"id"`
-	Name                       string    `db:"name"`
-	Email                      string    `db:"email"`
-	PasswordHash               string    `db:"password_hash"`
-	IsVerified                 bool      `db:"is_verified"`
-	VerificationToken          string    `db:"verification_token"`
-	VerificationTokenExpiresAt time.Time `db:"verification_token_expires_at"`
-	CreatedAt                  time.Time `db:"created_at"`
-	UpdatedAt                  time.Time `db:"updated_at"`
+	Id                         string     `db:"id"`
+	Name                       string     `db:"name"`
+	Email                      string     `db:"email"`
+	PasswordHash               string     `db:"password_hash"`
+	IsVerified                 bool       `db:"is_verified"`
+	VerifiedAt                 *time.Time `db:"verified_at"`
+	VerificationToken          string     `db:"verification_token"`
+	VerificationTokenExpiresAt time.Time  `db:"verification_token_expires_at"`
+	CreatedAt                  time.Time  `db:"created_at"`
+	UpdatedAt                  time.Time  `db:"updated_at"`
 }
 
 type UserRepository interface {

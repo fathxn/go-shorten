@@ -31,7 +31,7 @@ func main() {
 	urlHandler := http.NewURLHandler(urlService)
 
 	userRepository := postgres.NewUserRepository(db)
-	userService := usecase.NewUserService(userRepository, urlRepository)
+	userService := usecase.NewUserUsecase(userRepository, urlRepository)
 	userHandler := http.NewUserHandler(userService)
 
 	authService := usecase.NewAuthService(userRepository)
