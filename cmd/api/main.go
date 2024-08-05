@@ -1,11 +1,12 @@
 package main
 
 import (
-	"go-shorten/internal/config"
+	"go-shorten/config"
 	"go-shorten/internal/delivery/http"
 	"go-shorten/internal/middleware"
 	"go-shorten/internal/repository/postgres"
 	"go-shorten/internal/usecase"
+	"go-shorten/pkg/database"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,12 +16,12 @@ import (
 func main() {
 	// config.InitConfig()
 	// db := config.InitDB()
-	cfg, err := config.LoadConfig("./")
+	cfg, err := config.LoadConfig("config.yaml")
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	db, err := config.NewDB(cfg)
+	db, err := database.Connect(cfg)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
