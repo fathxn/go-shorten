@@ -11,10 +11,10 @@ import (
 )
 
 type urlHandler struct {
-	URLService domain.URLService
+	URLService domain.URLUsecase
 }
 
-func NewURLHandler(urlService domain.URLService) *urlHandler {
+func NewURLHandler(urlService domain.URLUsecase) *urlHandler {
 	return &urlHandler{URLService: urlService}
 }
 
