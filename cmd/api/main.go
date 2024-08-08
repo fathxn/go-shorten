@@ -27,7 +27,7 @@ func main() {
 	}
 
 	urlRepository := postgres.NewURLRepository(db)
-	urlService := usecase.NewURLService(urlRepository)
+	urlService := usecase.NewURLUsecase(urlRepository)
 	urlHandler := http.NewURLHandler(urlService)
 
 	userRepository := postgres.NewUserRepository(db)

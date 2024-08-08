@@ -22,7 +22,7 @@ type URLRepository interface {
 	Delete(ctx context.Context, id int) error
 }
 
-type URLService interface {
+type URLUsecase interface {
 	Create(ctx context.Context, longURL string, userId string) (*URL, error)
 	GetLongURL(ctx context.Context, shortCode string) (*URL, error)
 	GetById(ctx context.Context, id int) (*URL, error)

@@ -21,7 +21,7 @@ type DBConfig struct {
 
 type SMTPConfig struct {
 	Host        string `mapstructure:"host"`
-	Port        string `mapstructure:"port"`
+	Port        int    `mapstructure:"port"`
 	Email       string `mapstructure:"email"`
 	Password    string `mapstructure:"password"`
 	FromName    string `mapstructure:"from_name"`

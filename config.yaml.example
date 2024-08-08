@@ -1,7 +1,7 @@
 database:
-  host: "localhost"
-  port: 5432
-  user: "postgres"
-  password: "root"
-  dbname: "go-shorten"
-  sslmode: "disable"
+  host: 
+  port: 
+  user: 
+  password: 
+  dbname: 
+  sslmode:
