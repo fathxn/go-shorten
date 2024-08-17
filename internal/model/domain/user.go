@@ -4,10 +4,12 @@ import (
 	"context"
 	"go-shorten/internal/model/dto"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type User struct {
-	Id                         string     `db:"id"`
+	Id                         uuid.UUID  `db:"id"`
 	Name                       string     `db:"name"`
 	Email                      string     `db:"email"`
 	PasswordHash               string     `db:"password_hash"`
@@ -21,17 +23,17 @@ type User struct {
 
 type UserRepository interface {
 	Create(ctx context.Context, user *User) error
-	GetById(ctx context.Context, id string) (*User, error)
+	GetById(ctx context.Context, id uuid.UUID) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByVerificationToken(ctx context.Context, token string) (*User, error)
-	UpdateVerificationStatus(ctx context.Context, userId string, isVerified bool) error
-	Delete(ctx context.Context, id string) error
+	UpdateVerificationStatus(ctx context.Context, userId uuid.UUID, isVerified bool) error
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type UserUsecase interface {
 	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error
 	VerifyEmail(ctx context.Context, token string) error
-	GetById(ctx context.Context, id string) (*User, error)
+	GetById(ctx context.Context, id uuid.UUID) (*User, error)
 	GetURLsByUserId(ctx context.Context, userId string) (*[]URL, error)
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, id uuid.UUID) error
 }

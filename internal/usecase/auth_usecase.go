@@ -5,7 +5,6 @@ import (
 	"go-shorten/internal/model/domain"
 	"go-shorten/internal/model/dto"
 
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,13 +22,12 @@ func NewAuthService(UserRepository domain.UserRepository) AuthUsecase {
 }
 
 func (s *authService) RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error {
-	generateUUID := uuid.New()
+	// generateUUID := uuid.New()
 	HashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerInput.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 	user := &domain.User{
-		Id:           generateUUID.String(),
 		Name:         registerInput.Name,
 		Email:        registerInput.Email,
 		PasswordHash: string(HashedPassword),

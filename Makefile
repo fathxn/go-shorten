@@ -1,5 +1,5 @@
 # Database connection string
-DB_URL=postgres://username:password@localhost:5432/database_name?sslmode=disable
+DB_URL=postgres://postgres:root@localhost:5432/go-shorten?sslmode=disable
 
 # Migrate create
 migrate-create:
