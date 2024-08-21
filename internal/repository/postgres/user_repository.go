@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"go-shorten/internal/model/domain"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -20,12 +21,11 @@ func NewUserRepository(db *sqlx.DB) domain.UserRepository {
 // Create implements domain.UserRepository.
 func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 	query := `
-		INSERT INTO users (id, name, email, password_hash, is_verified, verified_at, verification_token, verification_token_expires_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-		RETURNING created_at, updated_at
+		INSERT INTO users (id, name, email, password_hash, is_verified, verification_token, verification_token_expires_at, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	`
 
-	err := r.db.QueryRowContext(
+	_, err := r.db.ExecContext(
 		ctx,
 		query,
 		user.Id,
@@ -33,10 +33,27 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 		user.Email,
 		user.PasswordHash,
 		user.IsVerified,
-		user.VerifiedAt,
 		user.VerificationToken,
 		user.VerificationTokenExpiresAt,
-	).Scan(&user.CreatedAt, &user.UpdatedAt)
+		user.CreatedAt,
+		user.UpdatedAt,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateVerificationStatus implements domain.UserRepository.
+func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId uuid.UUID, verifiedAt *time.Time) error {
+	query := `
+		UPDATE users
+		SET is_verified = true, verified_at = $2
+		WHERE id = $1
+	`
+	_, err := r.db.ExecContext(ctx, query, userId, verifiedAt)
 
 	if err != nil {
 		return err
@@ -76,10 +93,5 @@ func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (*domain.Use
 
 // GetByVerificationToken implements domain.UserRepository.
 func (r *userRepository) GetByVerificationToken(ctx context.Context, token string) (*domain.User, error) {
-	panic("unimplemented")
-}
-
-// UpdateVerificationStatus implements domain.UserRepository.
-func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId uuid.UUID, isVerified bool) error {
 	panic("unimplemented")
 }

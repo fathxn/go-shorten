@@ -11,8 +11,8 @@ import (
 )
 
 type AuthUsecase interface {
+	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) (string, error)
 	VerifyEmail(ctx context.Context, token string) error
-	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error
 	LoginUser(ctx context.Context, loginInput *dto.UserLoginInput) (*domain.User, error)
 }
 
@@ -24,34 +24,21 @@ func NewAuthUsecase(UserRepository domain.UserRepository) AuthUsecase {
 	return &authUsecase{UserRepository: UserRepository}
 }
 
-func (u *authUsecase) VerifyEmail(ctx context.Context, token string) error {
-	user, err := u.UserRepository.GetByVerificationToken(ctx, token)
-	if err != nil {
-		return err
-	}
-
-	if user == nil {
-		return errors.New("verification token has expired")
-	}
-
-	return u.UserRepository.UpdateVerificationStatus(ctx, user.Id, true)
-}
-
-func (u *authUsecase) RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error {
+func (u *authUsecase) RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) (string, error) {
 	// check email is used/registered/stored in database
 	emailIsExist, err := u.UserRepository.GetByEmail(ctx, registerInput.Email)
 	if err != nil {
-		return err
+		return "", err
 	}
 	// check if email is not nil or already stored in database
 	if emailIsExist != nil {
-		return errors.New("email is already used")
+		return "", errors.New("email is already used")
 	}
 
 	// hash/encrypt the password from input request
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerInput.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return "", nil
 	}
 
 	user := &domain.User{
@@ -64,8 +51,21 @@ func (u *authUsecase) RegisterUser(ctx context.Context, registerInput *dto.UserR
 	// create the user/store user data in repository database
 	err = u.UserRepository.Create(ctx, user)
 	if err != nil {
+		return "", err
+	}
+	return user.VerificationToken, nil
+}
+
+func (u *authUsecase) VerifyEmail(ctx context.Context, token string) error {
+	user, err := u.UserRepository.GetByVerificationToken(ctx, token)
+	if err != nil {
 		return err
 	}
+
+	if user == nil {
+		return errors.New("verification token has expired")
+	}
+
 	return nil
 }
 

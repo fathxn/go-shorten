@@ -29,7 +29,7 @@ func (h *authHandler) RegisterUser(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	if err := h.AuthService.RegisterUser(context.Background(), request); err != nil {
+	if _, err := h.AuthService.RegisterUser(context.Background(), request); err != nil {
 		response := util.ResponseFormat(fiber.StatusConflict, "email already registered", err.Error())
 		return ctx.Status(fiber.StatusConflict).JSON(response)
 	}
