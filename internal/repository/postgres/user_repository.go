@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
 	"go-shorten/internal/model/domain"
 
 	"github.com/google/uuid"
@@ -19,14 +20,15 @@ func NewUserRepository(db *sqlx.DB) domain.UserRepository {
 // Create implements domain.UserRepository.
 func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 	query := `
-		INSERT INTO users (name, email, password_hash, is_verified, verified_at, verification_token, verification_token_expires_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
-		RETURNING id, created_at, updated_at
+		INSERT INTO users (id, name, email, password_hash, is_verified, verified_at, verification_token, verification_token_expires_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING created_at, updated_at
 	`
 
 	err := r.db.QueryRowContext(
 		ctx,
 		query,
+		user.Id,
 		user.Name,
 		user.Email,
 		user.PasswordHash,
@@ -34,7 +36,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 		user.VerifiedAt,
 		user.VerificationToken,
 		user.VerificationTokenExpiresAt,
-	).Scan(&user.Id, &user.CreatedAt, &user.UpdatedAt)
+	).Scan(&user.CreatedAt, &user.UpdatedAt)
 
 	if err != nil {
 		return err
@@ -50,7 +52,21 @@ func (r *userRepository) Delete(ctx context.Context, id uuid.UUID) error {
 
 // GetByEmail implements domain.UserRepository.
 func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
-	panic("unimplemented")
+	var user domain.User
+	query := `
+		SELECT id, name, email, is_verified
+		FROM users
+		WHERE email = $1
+	`
+	err := r.db.GetContext(ctx, &user, query, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // GetById implements domain.UserRepository.

@@ -2,7 +2,6 @@ package domain
 
 import (
 	"context"
-	"go-shorten/internal/model/dto"
 	"time"
 
 	"github.com/google/uuid"
@@ -31,8 +30,6 @@ type UserRepository interface {
 }
 
 type UserUsecase interface {
-	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) error
-	VerifyEmail(ctx context.Context, token string) error
 	GetById(ctx context.Context, id uuid.UUID) (*User, error)
 	GetURLsByUserId(ctx context.Context, userId string) (*[]URL, error)
 	Delete(ctx context.Context, id uuid.UUID) error
