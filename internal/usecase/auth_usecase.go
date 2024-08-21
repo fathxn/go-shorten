@@ -20,7 +20,7 @@ type authUsecase struct {
 	UserRepository domain.UserRepository
 }
 
-func NewAuthService(UserRepository domain.UserRepository) AuthUsecase {
+func NewAuthUsecase(UserRepository domain.UserRepository) AuthUsecase {
 	return &authUsecase{UserRepository: UserRepository}
 }
 

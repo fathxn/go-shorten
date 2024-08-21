@@ -26,16 +26,19 @@ func main() {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 
+	// Initialize repositories
 	urlRepository := postgres.NewURLRepository(db)
-	urlService := usecase.NewURLUsecase(urlRepository)
-	urlHandler := http.NewURLHandler(urlService)
-
 	userRepository := postgres.NewUserRepository(db)
-	userService := usecase.NewUserUsecase(userRepository, urlRepository)
-	userHandler := http.NewUserHandler(userService)
 
-	authService := usecase.NewAuthService(userRepository)
-	authHandler := http.NewAuthHandler(authService)
+	// Initialize usecases
+	urlUsecase := usecase.NewURLUsecase(urlRepository)
+	userUsecase := usecase.NewUserUsecase(userRepository, urlRepository)
+	authUsecase := usecase.NewAuthUsecase(userRepository)
+
+	// Initialize handlers
+	urlHandler := http.NewURLHandler(urlUsecase)
+	userHandler := http.NewUserHandler(userUsecase)
+	authHandler := http.NewAuthHandler(authUsecase)
 
 	app := fiber.New()
 	app.Use(logger.New())
