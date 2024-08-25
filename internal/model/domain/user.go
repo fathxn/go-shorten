@@ -25,7 +25,7 @@ type UserRepository interface {
 	GetById(ctx context.Context, id uuid.UUID) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByVerificationToken(ctx context.Context, token string) (*User, error)
-	UpdateVerificationStatus(ctx context.Context, userId uuid.UUID) error
+	UpdateVerificationStatus(ctx context.Context, userId uuid.UUID, verifiedAt *time.Time) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 

@@ -10,17 +10,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthUsecase interface {
-	RegisterUser(ctx context.Context, registerInput *dto.UserRegisterInput) (string, error)
-	VerifyEmail(ctx context.Context, token string) error
-	LoginUser(ctx context.Context, loginInput *dto.UserLoginInput) (*domain.User, error)
-}
-
 type authUsecase struct {
 	UserRepository domain.UserRepository
 }
 
-func NewAuthUsecase(UserRepository domain.UserRepository) AuthUsecase {
+func NewAuthUsecase(UserRepository domain.UserRepository) domain.AuthUsecase {
 	return &authUsecase{UserRepository: UserRepository}
 }
 

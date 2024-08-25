@@ -2,18 +2,18 @@ package http
 
 import (
 	"context"
+	"go-shorten/internal/model/domain"
 	"go-shorten/internal/model/dto"
-	"go-shorten/internal/usecase"
 	"go-shorten/util"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type authHandler struct {
-	AuthService usecase.AuthUsecase
+	AuthService domain.AuthUsecase
 }
 
-func NewAuthHandler(authService usecase.AuthUsecase) *authHandler {
+func NewAuthHandler(authService domain.AuthUsecase) *authHandler {
 	return &authHandler{AuthService: authService}
 }
 
