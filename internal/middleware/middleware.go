@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-shorten/internal/model/domain"
+	"go-shorten/internal/domain"
 	"go-shorten/util"
 
 	"github.com/gofiber/fiber/v2"

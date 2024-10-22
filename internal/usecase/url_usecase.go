@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-shorten/internal/model/domain"
+	"go-shorten/internal/domain"
 	"go-shorten/util"
 
 	"gorm.io/gorm"
@@ -21,7 +21,7 @@ func NewURLUsecase(urlRepository domain.URLRepository) domain.URLUsecase {
 func (s *urlUsecase) Create(ctx context.Context, longURL string, userId string) (*domain.URL, error) {
 	shortCode, err := util.GenerateUniqueCode(s.isShortCodeUnique)
 	if err != nil {
-		return nil, fmt.Errorf("failed to generate short code: %v", err)
+		return nil, err
 	}
 	shortUrl := &domain.URL{
 		UserId:    userId,
@@ -30,7 +30,7 @@ func (s *urlUsecase) Create(ctx context.Context, longURL string, userId string) 
 	}
 	err = s.URLRepository.Insert(ctx, shortUrl)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create short URL: %v", err)
+		return nil, err
 	}
 	return shortUrl, nil
 }

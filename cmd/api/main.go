@@ -33,12 +33,10 @@ func main() {
 	// Initialize usecases
 	urlUsecase := usecase.NewURLUsecase(urlRepository)
 	userUsecase := usecase.NewUserUsecase(userRepository, urlRepository)
-	authUsecase := usecase.NewAuthUsecase(userRepository)
 
 	// Initialize handlers
 	urlHandler := http.NewURLHandler(urlUsecase)
 	userHandler := http.NewUserHandler(userUsecase)
-	authHandler := http.NewAuthHandler(authUsecase)
 
 	app := fiber.New()
 	app.Use(logger.New())
@@ -48,12 +46,10 @@ func main() {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
-	// auth routes
-	v1.Post("/auth/register", authHandler.RegisterUser)
-	v1.Post("/auth/login", authHandler.AuthLogin)
-
 	// user routes
 	v1.Get("/:user_id", userHandler.GetURLsByUserId) // get list of shortened url by user_id
+	v1.Post("/auth/register", userHandler.RegisterUser)
+	v1.Post("/auth/login", userHandler.AuthLogin)
 
 	// short url routes
 	v1.Post("/short_url", middleware.AuthMiddleware, urlHandler.CreateShortURL)

@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"go-shorten/internal/model/domain"
+	"go-shorten/internal/domain"
 	"time"
 
 	"github.com/google/uuid"
