@@ -45,25 +45,21 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 	return nil
 }
 
-// UpdateVerificationStatus implements domain.UserRepository.
-func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId string, verifiedAt *time.Time) error {
+// GetById implements domain.UserRepository.
+func (r *userRepository) GetById(ctx context.Context, id string) (*domain.User, error) {
+	var user domain.User
 	query := `
-		UPDATE users
-		SET is_verified = true, verified_at = $2
-		WHERE id = $1
+		SELECT name, email, created_at, updated_at FROM users WHERE id = $1;
 	`
-	_, err := r.db.ExecContext(ctx, query, userId, verifiedAt)
-
+	err := r.db.GetContext(ctx, &user, query, id)
 	if err != nil {
-		return err
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
 	}
 
-	return nil
-}
-
-// Delete implements domain.UserRepository.
-func (r *userRepository) Delete(ctx context.Context, id string) error {
-	panic("unimplemented")
+	return &user, nil
 }
 
 // GetByEmail implements domain.UserRepository.
@@ -85,12 +81,34 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.
 	return &user, nil
 }
 
-// GetById implements domain.UserRepository.
-func (r *userRepository) GetById(ctx context.Context, id string) (*domain.User, error) {
-	panic("unimplemented")
-}
-
 // GetByVerificationToken implements domain.UserRepository.
 func (r *userRepository) GetByVerificationToken(ctx context.Context, token string) (*domain.User, error) {
 	panic("unimplemented")
+}
+
+// UpdateVerificationStatus implements domain.UserRepository.
+func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId string, verifiedAt *time.Time) error {
+	query := `
+		UPDATE users
+		SET is_verified = true, verified_at = $2
+		WHERE id = $1
+	`
+	_, err := r.db.ExecContext(ctx, query, userId, verifiedAt)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Delete implements domain.UserRepository.
+func (r *userRepository) Delete(ctx context.Context, id string) error {
+	query := `DELETE FROM users WHERE id = $1;`
+	result, err := r.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+	_, err = result.RowsAffected()
+	return err
 }
