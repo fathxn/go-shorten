@@ -27,3 +27,35 @@ type DomainError struct {
 func (e *DomainError) Error() string {
 	return e.Message
 }
+
+func NewNotFoundError(message string, err error) *DomainError {
+	return &DomainError{
+		Code:    ErrNotFound,
+		Message: message,
+		Err:     err,
+	}
+}
+
+func NewInvalidInputError(message string, err error) *DomainError {
+	return &DomainError{
+		Code:    ErrInvalidInput,
+		Message: message,
+		Err:     err,
+	}
+}
+
+func NewInternalError(message string, err error) *DomainError {
+	return &DomainError{
+		Code:    ErrInternal,
+		Message: message,
+		Err:     err,
+	}
+}
+
+func NewUnauthorizedError(message string, err error) *DomainError {
+	return &DomainError{
+		Code:    ErrUnauthorized,
+		Message: message,
+		Err:     err,
+	}
+}

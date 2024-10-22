@@ -6,7 +6,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
 
 func AuthMiddleware(ctx *fiber.Ctx) error {
@@ -33,7 +32,7 @@ func AuthMiddleware(ctx *fiber.Ctx) error {
 
 func RequireVerifiedEmail(userUsecase domain.UserUsecase) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		userId := c.Locals("userId").(uuid.UUID)
+		userId := c.Locals("userId").(string)
 		user, err := userUsecase.GetById(c.Context(), userId)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to get user"})

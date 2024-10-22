@@ -6,7 +6,6 @@ import (
 	"go-shorten/internal/domain"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -47,7 +46,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 }
 
 // UpdateVerificationStatus implements domain.UserRepository.
-func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId uuid.UUID, verifiedAt *time.Time) error {
+func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId string, verifiedAt *time.Time) error {
 	query := `
 		UPDATE users
 		SET is_verified = true, verified_at = $2
@@ -63,7 +62,7 @@ func (r *userRepository) UpdateVerificationStatus(ctx context.Context, userId uu
 }
 
 // Delete implements domain.UserRepository.
-func (r *userRepository) Delete(ctx context.Context, id uuid.UUID) error {
+func (r *userRepository) Delete(ctx context.Context, id string) error {
 	panic("unimplemented")
 }
 
@@ -87,7 +86,7 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.
 }
 
 // GetById implements domain.UserRepository.
-func (r *userRepository) GetById(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+func (r *userRepository) GetById(ctx context.Context, id string) (*domain.User, error) {
 	panic("unimplemented")
 }
 

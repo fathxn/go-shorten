@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"go-shorten/internal/domain"
+	"go-shorten/internal/domain/errors"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -29,7 +29,7 @@ func (u *userUsecase) RegisterUser(ctx context.Context, registerInput *domain.Us
 	}
 	// check if email is not nil or already stored in database
 	if emailIsExist != nil {
-		return "", errors.New("email is already used")
+		return "", err
 	}
 
 	// hash/encrypt the password from input request
@@ -39,7 +39,7 @@ func (u *userUsecase) RegisterUser(ctx context.Context, registerInput *domain.Us
 	}
 
 	user := &domain.User{
-		Id:           uuid.New(),
+		Id:           uuid.New().String(),
 		Name:         registerInput.Name,
 		Email:        registerInput.Email,
 		PasswordHash: string(hashedPassword),
@@ -60,7 +60,7 @@ func (u *userUsecase) VerifyEmail(ctx context.Context, token string) error {
 	}
 
 	if user == nil {
-		return errors.New("verification token has expired")
+		return err
 	}
 
 	return nil
@@ -80,7 +80,11 @@ func (u *userUsecase) LoginUser(ctx context.Context, loginInput *domain.UserLogi
 	return user, nil
 }
 
-func (u *userUsecase) GetById(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+func (u *userUsecase) GetById(ctx context.Context, id string) (*domain.User, error) {
+	if id == "" {
+		return nil, errors.NewInvalidInputError("user ID cannot be empty", nil)
+	}
+
 	user, err := u.UserRepository.GetById(ctx, id)
 	if err != nil {
 		return nil, err
@@ -92,7 +96,7 @@ func (u *userUsecase) GetURLsByUserId(ctx context.Context, userId string) (*[]do
 	return nil, nil
 }
 
-func (s *userUsecase) Delete(ctx context.Context, id uuid.UUID) error {
+func (s *userUsecase) Delete(ctx context.Context, id string) error {
 	err := s.UserRepository.Delete(ctx, id)
 	if err != nil {
 		return err

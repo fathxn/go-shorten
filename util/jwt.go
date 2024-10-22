@@ -4,11 +4,10 @@ import (
 	"fmt"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"github.com/spf13/viper"
 )
 
-func GenerateJWT(id uuid.UUID) (string, error) {
+func GenerateJWT(id string) (string, error) {
 	// claims/payload data
 	claims := jwt.MapClaims{
 		"id": id,

@@ -3,12 +3,10 @@ package domain
 import (
 	"context"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type User struct {
-	Id                         uuid.UUID  `db:"id"`
+	Id                         string     `db:"id"`
 	Name                       string     `db:"name"`
 	Email                      string     `db:"email"`
 	PasswordHash               string     `db:"password_hash"`
@@ -22,20 +20,20 @@ type User struct {
 
 type UserRepository interface {
 	Create(ctx context.Context, user *User) error
-	GetById(ctx context.Context, id uuid.UUID) (*User, error)
+	GetById(ctx context.Context, id string) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByVerificationToken(ctx context.Context, token string) (*User, error)
-	UpdateVerificationStatus(ctx context.Context, userId uuid.UUID, verifiedAt *time.Time) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	UpdateVerificationStatus(ctx context.Context, userId string, verifiedAt *time.Time) error
+	Delete(ctx context.Context, id string) error
 }
 
 type UserUsecase interface {
 	RegisterUser(ctx context.Context, registerInput *UserRegisterInput) (string, error)
 	VerifyEmail(ctx context.Context, token string) error
 	LoginUser(ctx context.Context, loginInput *UserLoginInput) (*User, error)
-	GetById(ctx context.Context, id uuid.UUID) (*User, error)
+	GetById(ctx context.Context, id string) (*User, error)
 	GetURLsByUserId(ctx context.Context, userId string) (*[]URL, error)
-	Delete(ctx context.Context, id uuid.UUID) error
+	Delete(ctx context.Context, id string) error
 }
 
 type UserRegisterInput struct {
